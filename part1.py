@@ -4,6 +4,7 @@ from ucimlrepo import fetch_ucirepo
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+import numpy as np
   
 # fetch dataset 
 real_estate_valuation = fetch_ucirepo(id=477) 
@@ -70,3 +71,41 @@ print(X_train.head())
 
 print("\nScaled training data:")
 print(X_train_scaled[:5])
+
+
+class LinearRegression:
+    def __init__(self, learning_rate=0.01, iterations=1000):
+        self.learning_rate = learning_rate
+        self.iterations = iterations
+        self.weights = None
+        self.bias = 0
+        self.mse_history = []
+
+    def fit(self, X, y):
+        num_samples, num_features = X.shape
+        self.weights = np.zeros(num_features)
+        self.bias = 0
+
+        for i in range(self.iterations):
+
+            # make predictions using current weights
+            predictions = np.dot(X, self.weights) + self.bias
+
+            # calculate the errors
+            errors = predictions - y
+
+            # calculate + save mean squared error
+            mse = np.mean(errors ** 2)
+            self.mse_history.append(mse)
+
+            # calculate gradients
+            # dw represents how the weights should be changed, and db represents how the bias should be changed
+            dw = (2 / num_samples) * np.dot(X.T, errors)
+            db = (2 / num_samples) * np.sum(errors)
+
+            # change the weights and bias using the gradients and learning rate
+            self.weights -= self.learning_rate * dw
+            self.bias -= self.learning_rate * db
+
+            
+
