@@ -100,6 +100,7 @@ class LinearRegression:
 
         self.weights = np.zeros(num_features)
         self.bias = 0
+        self.mse_history = []
 
         for i in range(self.iterations):
 
@@ -127,7 +128,7 @@ class LinearRegression:
 
 # hyperparameters to test
 learning_rates = [0.001, 0.01, 0.1, 0.2]
-iterations_list = [100, 200, 500, 1000]
+iterations_list = [100, 200, 300]
 
 y_train = y_train.to_numpy().ravel()
 y_val = y_val.to_numpy().ravel()
@@ -165,24 +166,29 @@ for learning_rate in learning_rates:
 
         # calculate validation MSE
         val_mse = np.mean((val_predictions - y_val) ** 2)
+        train_predictions = model.predict(X_train_scaled)
+        train_mse = np.mean((train_predictions - y_train) ** 2)
 
         # display result
         print(
             f"Learning Rate: {learning_rate}, "
             f"Iterations: {iterations}, "
+            f"Training MSE: {train_mse:.4f}, "
             f"Validation MSE: {val_mse:.4f}"
         )
+
 
         plt.plot(
             range(len(model.mse_history)),
             model.mse_history,
-            label=f"Learning Rate = {learning_rate}"
+            label=f"LR={learning_rate}, Iter={iterations}"
         )
 
         # save result to log file
         logging.info(
             f"Learning Rate: {learning_rate}, "
             f"Iterations: {iterations}, "
+            f"Training MSE: {train_mse:.4f}, "
             f"Validation MSE: {val_mse:.4f}"
         )
 
@@ -210,25 +216,61 @@ plt.title("Effect of Learning Rate on Training")
 plt.legend()
 plt.show()
 
-plt.plot(range(len(best_model.mse_history)), best_model.mse_history)
-plt.xlabel("Iteration")
-plt.ylabel("Training MSE")
-plt.title("Training MSE vs. Iteration")
-plt.show()
-
 best_model = LinearRegression(
     learning_rate=best_learning_rate,
     iterations=best_iterations
 )
 
 best_model.fit(X_train_scaled, y_train)
+plt.plot(range(len(best_model.mse_history)), best_model.mse_history)
+plt.xlabel("Iteration")
+plt.ylabel("Training MSE")
+plt.title("Training MSE vs. Iteration")
+plt.show()
+
+print("\nFinal Model Weights:")
+for feature, weight in zip(X.columns, best_model.weights):
+    print(f"{feature}: {weight:.4f}")
+
+print(f"Bias: {best_model.bias:.4f}")
+
 
 test_predictions = best_model.predict(X_test_scaled)
 
 test_mse = np.mean((test_predictions - y_test) ** 2)
+# calculate R-squared
+ss_res = np.sum((y_test - test_predictions) ** 2)
+ss_tot = np.sum((y_test - np.mean(y_test)) ** 2)
+r2 = 1 - (ss_res / ss_tot)
+
+# calculate explained variance
+explained_variance = 1 - (
+    np.var(y_test - test_predictions) / np.var(y_test)
+)
 
 print(f"Final Test MSE: {test_mse:.4f}")
+print(f"R-squared: {r2:.4f}")
+print(f"Explained Variance: {explained_variance:.4f}")
 
 logging.info(
-    f"Final Test MSE: {test_mse:.4f}"
+    f"Final Test MSE: {test_mse:.4f}, "
+    f"R-squared: {r2:.4f}, "
+    f"Explained Variance: {explained_variance:.4f}"
 )
+
+plt.scatter(y_test, test_predictions)
+
+plt.xlabel("Actual House Price")
+plt.ylabel("Predicted House Price")
+plt.title("Actual vs. Predicted House Prices")
+
+minimum = min(y_test.min(), test_predictions.min())
+maximum = max(y_test.max(), test_predictions.max())
+
+plt.plot(
+    [minimum, maximum],
+    [minimum, maximum],
+    "--"
+)
+
+plt.show()

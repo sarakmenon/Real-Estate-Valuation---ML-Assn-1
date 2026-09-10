@@ -1,0 +1,14 @@
+2026-09-09 19:37:54,460 - Learning Rate: 0.001, Iterations: 100, Training MSE: 1146.9240, Validation MSE: 1007.5500
+2026-09-09 19:37:54,464 - Learning Rate: 0.001, Iterations: 200, Training MSE: 789.4846, Validation MSE: 695.7715
+2026-09-09 19:37:54,469 - Learning Rate: 0.001, Iterations: 300, Training MSE: 555.9568, Validation MSE: 488.9590
+2026-09-09 19:37:54,472 - Learning Rate: 0.01, Iterations: 100, Training MSE: 117.8077, Validation MSE: 86.1585
+2026-09-09 19:37:54,476 - Learning Rate: 0.01, Iterations: 200, Training MSE: 90.4222, Validation MSE: 59.6326
+2026-09-09 19:37:54,482 - Learning Rate: 0.01, Iterations: 300, Training MSE: 89.5767, Validation MSE: 59.3388
+2026-09-09 19:37:54,483 - Learning Rate: 0.1, Iterations: 100, Training MSE: 89.2473, Validation MSE: 60.4135
+2026-09-09 19:37:54,486 - Learning Rate: 0.1, Iterations: 200, Training MSE: 89.2458, Validation MSE: 60.5076
+2026-09-09 19:37:54,493 - Learning Rate: 0.1, Iterations: 300, Training MSE: 89.2458, Validation MSE: 60.5096
+2026-09-09 19:37:54,496 - Learning Rate: 0.2, Iterations: 100, Training MSE: 89.2458, Validation MSE: 60.5078
+2026-09-09 19:37:54,499 - Learning Rate: 0.2, Iterations: 200, Training MSE: 89.2458, Validation MSE: 60.5096
+2026-09-09 19:37:54,503 - Learning Rate: 0.2, Iterations: 300, Training MSE: 89.2458, Validation MSE: 60.5096
+2026-09-09 19:37:54,505 - BEST MODEL - Learning Rate: 0.01, Iterations: 300, Validation MSE: 59.3388
+2026-09-09 19:38:25,703 - Final Test MSE: 53.4931, R-squared: 0.6811, Explained Variance: 0.6818
