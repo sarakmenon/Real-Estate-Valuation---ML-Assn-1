@@ -47,7 +47,7 @@ print(y.isnull().sum())
 data = pd.concat([X, y], axis=1)
 
 
-# Check for duplicate rows
+# check for duplicate rows
 print("Number of duplicate rows:")
 print(data.duplicated().sum())
 
@@ -67,8 +67,8 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 
-# Take 20% of the training data for validation
-# Final proportions: 64% train, 16% validation, 20% test
+# taking 20% of the training data for validation
+# final proportions: 64% train, 16% validation, 20% test
 X_train, X_val, y_train, y_val = train_test_split(
     X_train,
     y_train,
@@ -85,11 +85,9 @@ print("y_train shape:", y_train.shape)
 print("y_val shape:", y_val.shape)
 print("y_test shape:", y_test.shape)
 
-
+# standardizing the features using StandardScaler only from the training set
 scaler = StandardScaler()
-
-
-# Learn the mean/std from training data and standardize it
+# learn the mean/std from training data and standardize it
 X_train_scaled = scaler.fit_transform(X_train)
 
 
@@ -107,12 +105,13 @@ print(X_train_scaled[:5])
 
 
 # SGDRegressor expects a one-dimensional target
+# .ravel() converts the target from a pandas table into a one-dimensional NumPy array
 y_train = y_train.to_numpy().ravel()
 y_val = y_val.to_numpy().ravel()
 y_test = y_test.to_numpy().ravel()
 
 
-# Same hyperparameters tested in Part 1
+# Same hyperparameters we tested in Part 1
 learning_rates = [0.001, 0.01, 0.1, 0.2]
 iterations_list = [100, 200, 300]
 
@@ -135,12 +134,12 @@ best_iterations = None
 plt.figure()
 
 
-# try every combination
+# try every combination we tried in part 1
 for learning_rate in learning_rates:
 
     for iterations in iterations_list:
 
-        # create the linear regression model using sklearn
+        # create the linear regression model using sklearn, not our own implementation
         model = SGDRegressor(
             eta0=learning_rate,
             max_iter=iterations,
@@ -152,47 +151,30 @@ for learning_rate in learning_rates:
 
         mse_history = []
 
+        # train one epoch at a time
         for epoch in range(iterations):
 
-            model.partial_fit(
-                X_train_scaled,
-                y_train
-            )
+            model.partial_fit(X_train_scaled, y_train)
 
-            train_predictions = model.predict(
-                X_train_scaled
-            )
+            train_predictions = model.predict(X_train_scaled)
 
-            epoch_mse = mean_squared_error(
-                y_train,
-                train_predictions
-            )
+            epoch_mse = mean_squared_error(y_train, train_predictions)
 
             mse_history.append(epoch_mse)
 
 
         # make predictions on validation set
-        val_predictions = model.predict(
-            X_val_scaled
-        )
+        val_predictions = model.predict(X_val_scaled)
 
 
         # calculate validation MSE
-        val_mse = mean_squared_error(
-            y_val,
-            val_predictions
-        )
+        val_mse = mean_squared_error(y_val, val_predictions)
 
 
         # calculate final training MSE
-        train_predictions = model.predict(
-            X_train_scaled
-        )
+        train_predictions = model.predict(X_train_scaled)
 
-        train_mse = mean_squared_error(
-            y_train,
-            train_predictions
-        )
+        train_mse = mean_squared_error(y_train, train_predictions)
 
         print(
             f"Learning Rate: {learning_rate}, "
@@ -202,7 +184,7 @@ for learning_rate in learning_rates:
         )
 
 
-        # Plot training MSE
+        # plot training MSE
         plt.plot(
             range(len(mse_history)),
             mse_history,
@@ -228,20 +210,11 @@ for learning_rate in learning_rates:
 
 print("\nBest Hyperparameters:")
 
-print(
-    "Learning Rate:",
-    best_learning_rate
-)
+print(f"Learning Rate: {best_learning_rate}")
 
-print(
-    "Iterations:",
-    best_iterations
-)
+print(f"Iterations: {best_iterations}")
 
-print(
-    "Validation MSE:",
-    best_mse
-)
+print(f"Validation MSE: {best_mse:.4f}")
 
 
 logging.info(
@@ -273,23 +246,13 @@ best_mse_history = []
 
 for epoch in range(best_iterations):
 
-    best_model.partial_fit(
-        X_train_scaled,
-        y_train
-    )
+    best_model.partial_fit(X_train_scaled, y_train)
 
-    train_predictions = best_model.predict(
-        X_train_scaled
-    )
+    train_predictions = best_model.predict(X_train_scaled)
 
-    train_mse = mean_squared_error(
-        y_train,
-        train_predictions
-    )
+    train_mse = mean_squared_error(y_train, train_predictions)
 
-    best_mse_history.append(
-        train_mse
-    )
+    best_mse_history.append(train_mse)
 
 #PLOTS
 
@@ -315,33 +278,21 @@ for feature, weight in zip(
     best_model.coef_
 ):
 
-    print(
-        f"{feature}: {weight:.4f}"
-    )
+    print(f"{feature}: {weight:.4f}")
 
 
 # intercept_ contains sklearn's learned bias
-print(
-    f"Bias: {best_model.intercept_[0]:.4f}"
-)
+print(f"Bias: {best_model.intercept_[0]:.4f}")
 
-test_predictions = best_model.predict(
-    X_test_scaled
-)
+test_predictions = best_model.predict(X_test_scaled)
 
 
 # calculate MSE using sklearn
-test_mse = mean_squared_error(
-    y_test,
-    test_predictions
-)
+test_mse = mean_squared_error(y_test, test_predictions)
 
 
 # calculate R-squared using sklearn
-r2 = r2_score(
-    y_test,
-    test_predictions
-)
+r2 = r2_score(y_test,test_predictions)
 
 
 # calculate explained variance using sklearn
@@ -351,17 +302,11 @@ explained_variance = explained_variance_score(
 )
 
 
-print(
-    f"Final Test MSE: {test_mse:.4f}"
-)
+print(f"Final Test MSE: {test_mse:.4f}")
 
-print(
-    f"R-squared: {r2:.4f}"
-)
+print(f"R-squared: {r2:.4f}")
 
-print(
-    f"Explained Variance: {explained_variance:.4f}"
-)
+print(f"Explained Variance: {explained_variance:.4f}")
 
 
 logging.info(
@@ -383,29 +328,17 @@ plt.scatter(
 )
 
 
-plt.xlabel(
-    "Actual House Price"
-)
+plt.xlabel("Actual House Price")
 
-plt.ylabel(
-    "Predicted House Price"
-)
+plt.ylabel("Predicted House Price")
 
-plt.title(
-    "SGDRegressor: Actual vs. Predicted House Prices"
-)
+plt.title("SGDRegressor: Actual vs. Predicted House Prices")
 
 
 # perfect prediction line
-minimum = min(
-    y_test.min(),
-    test_predictions.min()
-)
+minimum = min(y_test.min(), test_predictions.min())
 
-maximum = max(
-    y_test.max(),
-    test_predictions.max()
-)
+maximum = max(y_test.max(), test_predictions.max())
 
 
 plt.plot(

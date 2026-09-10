@@ -71,12 +71,13 @@ print("y_train shape:", y_train.shape)
 print("y_val shape:", y_val.shape)
 print("y_test shape:", y_test.shape)
 
+# standardizing the features using StandardScaler
 scaler = StandardScaler()
 
-# Learn the mean/std from training data and standardize it
+# learn the mean/std from training data and standardize it
 X_train_scaled = scaler.fit_transform(X_train)
 
-# Standardize test data using the SAME mean/std learned from training data
+# standardize test data using the SAME mean/std learned from training data
 X_test_scaled = scaler.transform(X_test)
 
 X_val_scaled = scaler.transform(X_val)
