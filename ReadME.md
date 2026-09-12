@@ -102,8 +102,7 @@ The following numbers of iterations are tested:
 
 * 100
 * 200
-* 500
-* 1000
+* 300
 
 Every combination of learning rate and iteration count is evaluated.
 
@@ -112,7 +111,8 @@ For each combination, the program:
 1. Trains a new linear regression model on the training set.
 2. Calculates the training MSE.
 3. Calculates the validation MSE.
-4. Records the results in `linear_regression_tuning.log`.
+4. Calculates the test MSE for reporting, without using it to select hyperparameters.
+5. Records the training, validation, and test MSE in `part1.log`.
 
 The model configuration with the lowest validation MSE is selected as the best set of hyperparameters. The held-out test set is not used to select the hyperparameters.
 
@@ -161,9 +161,9 @@ A diagonal reference line represents perfect predictions. Predictions closer to 
 
 Running the program creates:
 
-`linear_regression_tuning.log`
+`part1.log`
 
-The log contains the learning rate, number of iterations, training MSE, and validation MSE for each hyperparameter combination. It also records the selected hyperparameters and final test evaluation results.
+The log contains the learning rate, number of iterations, training MSE, validation MSE, and test MSE for each hyperparameter combination. Hyperparameters are selected using validation MSE only. It also records the selected hyperparameters and final test evaluation results.
 
 ---
 
@@ -252,7 +252,7 @@ Part 2 displays three plots:
 2. Training MSE across epochs for the selected model.
 3. Actual versus predicted test house prices, with a diagonal reference line for perfect predictions.
 
-Each run writes `sgd_regression_tuning.log` in the current working directory, replacing any previous contents. The log includes the training and validation MSE for each combination, the selected hyperparameters, and the final test metrics. Plots are displayed interactively rather than saved as image files.
+Each run writes `part2.log.log` in the current working directory, replacing any previous contents. The log includes the training and validation MSE for each combination, the selected hyperparameters, and the final test metrics. Plots are displayed interactively rather than saved as image files.
 
 ### Required Packages and Running Part 2
 

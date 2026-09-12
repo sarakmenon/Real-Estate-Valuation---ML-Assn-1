@@ -29,22 +29,23 @@ print(y)
 # checking for missing feature values
 print("Missing values in X:")
 print(X.isnull().sum())
+# nothing missing in the features
 
 # checking for missing target values
 print("\nMissing values in y:")
 print(y.isnull().sum())
+# nothing missing in the target
 
 # checking for redundant values
 data = pd.concat([X, y], axis=1)
-
-# Check for duplicate rows
 print("Number of duplicate rows:")
 print(data.duplicated().sum())
+# no duplicate rows
 
 # check for correlation
 correlations = data.corr()["Y house price of unit area"]
-
 print(correlations)
+# we decided to keep all features
 
 
 # splitting the data: 80% training, 20% testing
@@ -55,8 +56,8 @@ X_train, X_test, y_train, y_test = train_test_split(
     random_state=42
 )
 
-# Take 20% of the training data for validation
-# Final proportions: 64% train, 16% validation, 20% test
+# take 20% of the training data for validation
+# final proportions: 64% train, 16% validation, 20% test
 X_train, X_val, y_train, y_val = train_test_split(
     X_train,
     y_train,
@@ -74,12 +75,11 @@ print("y_test shape:", y_test.shape)
 # standardizing the features using StandardScaler
 scaler = StandardScaler()
 
-# learn the mean/std from training data and standardize it
+# learn + standardize the mean + std from training data
 X_train_scaled = scaler.fit_transform(X_train)
 
-# standardize test data using the SAME mean/std learned from training data
+# standardize test data using the mean + std learned from training data
 X_test_scaled = scaler.transform(X_test)
-
 X_val_scaled = scaler.transform(X_val)
 
 print("\nOriginal training data:")
@@ -137,9 +137,9 @@ y_test = y_test.to_numpy().ravel()
 
 plt.figure()
 
-# configure log file
+# log file
 logging.basicConfig(
-    filename="linear_regression_tuning.log",
+    filename="part1.log",
     level=logging.INFO,
     format="%(asctime)s - %(message)s",
     filemode="w"
@@ -169,13 +169,17 @@ for learning_rate in learning_rates:
         val_mse = np.mean((val_predictions - y_val) ** 2)
         train_predictions = model.predict(X_train_scaled)
         train_mse = np.mean((train_predictions - y_train) ** 2)
+        # Record test error for the assignment; select models using validation MSE only.
+        trial_test_predictions = model.predict(X_test_scaled)
+        trial_test_mse = np.mean((trial_test_predictions - y_test) ** 2)
 
         # display result
         print(
             f"Learning Rate: {learning_rate}, "
             f"Iterations: {iterations}, "
             f"Training MSE: {train_mse:.4f}, "
-            f"Validation MSE: {val_mse:.4f}"
+            f"Validation MSE: {val_mse:.4f}, "
+            f"Test MSE: {trial_test_mse:.4f}"
         )
 
 
@@ -190,7 +194,8 @@ for learning_rate in learning_rates:
             f"Learning Rate: {learning_rate}, "
             f"Iterations: {iterations}, "
             f"Training MSE: {train_mse:.4f}, "
-            f"Validation MSE: {val_mse:.4f}"
+            f"Validation MSE: {val_mse:.4f}, "
+            f"Test MSE: {trial_test_mse:.4f}"
         )
 
         # update best hyperparameters
